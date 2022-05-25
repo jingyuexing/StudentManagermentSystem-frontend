@@ -8,7 +8,8 @@
 
 <script>
     export default {
-        name:'login',
+        // eslint-disable-next-line vue/multi-word-component-names
+        name:'loginPage',
         components:{
         }
     }
