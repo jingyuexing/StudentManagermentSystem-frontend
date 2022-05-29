@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-table :columns="TeacherColums" :data-source="data">
+    <a-table :columns="StudentColums" :data-source="data" :rowKey="(record,index)=>record.id">
       <template #name="{ text }">
         <a>{{ text }}</a>
       </template>
@@ -10,22 +10,8 @@
           Name
         </span>
       </template>
-      <template #tags="{ text: tags }">
-        <span>
-          <a-tag
-            v-for="tag in tags"
-            :key="tag"
-            :color="
-              tag === 'loser'
-                ? 'volcano'
-                : tag.length > 5
-                ? 'geekblue'
-                : 'green'
-            "
-          >
-            {{ tag.toUpperCase() }}
-          </a-tag>
-        </span>
+      <template #gender="{text:gender}">
+        <a-tag :key="gender" :color="gender!=0?'volcano':'green'">{{gender!=0?"男":"女"}}</a-tag>
       </template>
       <template #action>
         <span>
@@ -34,13 +20,13 @@
         </span>
       </template>
     </a-table>
-    <a-row type="flex" justify="center" style="margin: 6px auto">
+    <!-- <a-row type="flex" justify="center" style="margin: 6px auto">
       <a-pagination
         v-model:current="current"
         :total="totalist"
         @change="changeHandle"
       ></a-pagination>
-    </a-row>
+    </a-row> -->
     <router-view></router-view>
   </div>
 </template>
@@ -62,7 +48,10 @@ const StudentColums = [
   {
     title:"性别",
     dataIndex:"gender",
-    key:"gender"
+    key:"gender",
+    slots:{
+      customRender:'gender'
+    }
   },
   {
     title:"学号",
@@ -192,19 +181,22 @@ const columns = [
   },
 ];
 
-const data = [
-
-];
 
 export default {
   name:"DataGrid",
   beforeMount(){
+    this.getStudentList(1,10).then(value=>{
+      this.data = value.data['data'];
+      console.log(value.data.data)
+    },(resean)=>{
+      console.log(resean)
+    })
   },
   data(){
     return {
       current:ref(1),
       totalist:ref(500),
-      data,
+      data:[],
       columns,
       StudentColums,
       TeacherColums,
@@ -215,18 +207,19 @@ export default {
   },
   methods:{
     changeHandle(page,pageSize){
-      axios({
+      this.getStudentList(page,pageSize).then(function(value){
+        this.data = value.data['data'];
+      },function(){
+
+      });
+    },
+    getStudentList(pagesize,page){
+      return axios({
         url:"http://localhost:1966/api/interface/v1/student/list",
         params:{
-          limit:pageSize,
+          limit:pagesize,
           page,
         }
-      }).then(function(res){
-        // success
-        console.log(res)
-      },function(res){
-        // failed
-        console.log(res)
       })
     }
   }

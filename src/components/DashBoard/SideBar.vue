@@ -42,6 +42,14 @@
       </a-menu-item>
       <a-menu-item key="10">修改账号信息</a-menu-item>
     </a-sub-menu>
+    <a-sub-menu key="sub4">
+      <template #title>登录</template>
+      <a-menu-item>
+        <router-link to="/login">
+          登录
+        </router-link>
+      </a-menu-item>
+    </a-sub-menu>
   </a-menu>
 </template>
 

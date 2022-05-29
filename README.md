@@ -1,5 +1,7 @@
 # student-managerment front-end
 
+![](https://img.shields.io/badge/Vue-3-green?logo=vue.js&style=flat)
+
 ## Project setup
 ```
 npm install
